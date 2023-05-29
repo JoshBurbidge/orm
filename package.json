@@ -20,6 +20,7 @@
     "url": "git+https://github.com/JoshBurbidge/orm.git"
   },
   "devDependencies": {
+    "@types/mysql2": "github:types/mysql2",
     "@types/node": "18",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",

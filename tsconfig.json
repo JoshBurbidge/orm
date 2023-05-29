@@ -62,7 +62,7 @@
   "watchOptions": {
     "excludeDirectories": [
       "**/node_modules",
-      "_build"
+      "lib"
     ],
   },
   "include": [
