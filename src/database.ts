@@ -1,4 +1,4 @@
-import mysql, { RowDataPacket, QueryError } from 'mysql2';
+import mysql, { RowDataPacket, QueryError } from 'mysql2/promise';
 import { User, UserOptions } from './client/model/User';
 
 function createUserOptions(userRowData: RowDataPacket): UserOptions {
@@ -10,29 +10,40 @@ function createUserOptions(userRowData: RowDataPacket): UserOptions {
   };
 }
 
+function parseResults(results: RowDataPacket[]) {
+  console.log(results); // results contains rows returned by server
+  const userOptions = createUserOptions(results[0]);
+  console.log(new User(userOptions));
+  // console.log(fields); // fields contains extra meta data about results, if available
+}
+
 export async function connect() {
-  const connection = mysql.createConnection({
+  const connection = await mysql.createConnection({
     host: 'localhost',
     user: process.env.DB_USER,
     database: 'test',
     password: process.env.DB_PASSWORD
   });
 
-  connection.query(
+  const [rows, fields] = await connection.query(
     'SELECT * FROM `user`',
-    function(err: QueryError, results: RowDataPacket) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log(results); // results contains rows returned by server
-      const userOptions = createUserOptions(results[0]);
-      console.log(new User(userOptions));
-      // console.log(fields); // fields contains extra meta data about results, if available
-    }
   );
 
-  connection.end((err) => {
-    if (err) console.log(err);
-  });
+  // console.log(typeof rows);
+  // if (!rows instanceof RowDataPacket) {
+  //   return;
+  // }
+
+  // parseResults(rows);
+
+  console.log(rows);
+  const userOptions = createUserOptions(rows[0]);
+  console.log(new User(userOptions));
+
+
+  return connection;
+}
+
+export async function disconnect(connection: mysql.Connection) {
+  return connection.end();
 }
