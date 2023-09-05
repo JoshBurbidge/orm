@@ -5,4 +5,3 @@ export class Uuid {
     return crypto.randomUUID(options);
   }
 }
-export const uuidObject = new Uuid();

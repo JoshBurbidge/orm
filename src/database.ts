@@ -1,4 +1,4 @@
-import mysql, { RowDataPacket, QueryError } from 'mysql2/promise';
+import mysql, { RowDataPacket, Connection } from 'mysql2/promise';
 import { User, UserOptions } from './client/model/User';
 
 function createUserOptions(userRowData: RowDataPacket): UserOptions {
@@ -17,7 +17,11 @@ function parseResults(results: RowDataPacket[]) {
   // console.log(fields); // fields contains extra meta data about results, if available
 }
 
-export async function connect() {
+function isArray(obj: any): obj is RowDataPacket[] {
+  return Boolean(obj.length);
+}
+
+export async function connect(): Promise<Connection> {
   const connection = await mysql.createConnection({
     host: 'localhost',
     user: process.env.DB_USER,
@@ -25,25 +29,23 @@ export async function connect() {
     password: process.env.DB_PASSWORD
   });
 
-  const [rows, fields] = await connection.query(
-    'SELECT * FROM `user`',
-  );
+  // const [rows, fields] = await connection.query(
+  //   'SELECT * FROM `user`',
+  // ) as [RowDataPacket[], FieldPacket[]];
 
-  // console.log(typeof rows);
-  // if (!rows instanceof RowDataPacket) {
+  // console.log(rows);
+
+  // if (!isArray(rows)) {
   //   return;
   // }
 
-  // parseResults(rows);
+  // const userOptions = createUserOptions(rows[0]);
+  // console.log(new User(userOptions));
 
-  console.log(rows);
-  const userOptions = createUserOptions(rows[0]);
-  console.log(new User(userOptions));
-
-
+  // TODO make a class and return object of that class
   return connection;
 }
 
-export async function disconnect(connection: mysql.Connection) {
+export async function disconnect(connection: mysql.Connection): Promise<void> {
   return connection.end();
 }
