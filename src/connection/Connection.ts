@@ -18,7 +18,6 @@ export class Connection {
   }
 }
 
-// let mysqlConnection: mysql.Connection;
 export async function connect(): Promise<Connection> {
   const mysqlConnection = await mysql.createConnection({
     host: 'localhost',
@@ -29,5 +28,3 @@ export async function connect(): Promise<Connection> {
 
   return new Connection(mysqlConnection);
 }
-
-// export const connection = new Connection(mysqlConnection);
