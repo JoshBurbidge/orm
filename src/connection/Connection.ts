@@ -19,12 +19,12 @@ export class Connection {
 }
 
 export async function connect(): Promise<Connection> {
-  const connection = await mysql.createConnection({
+  const mysqlConnection = await mysql.createConnection({
     host: 'localhost',
     user: process.env.DB_USER,
     database: 'test',
     password: process.env.DB_PASSWORD
   });
 
-  return new Connection(connection);
+  return new Connection(mysqlConnection);
 }
