@@ -1,15 +1,16 @@
-import { Connection } from '../connection/Connection';
+import { connection } from '../index';
 
 export class Table {
   name: string;
-  connection: Connection;
 
-  constructor(connection: Connection, name: string) {
+  constructor(name: string) {
     this.name = name;
-    this.connection = connection;
   }
 
-  async findAll() {
-    return await this.connection.raw(`select * from ${this.name}`);
+  static async findAll() {
+    if (!connection) {
+      return;
+    }
+    return await connection.raw(`select * from ${this.name}`);
   }
 }
