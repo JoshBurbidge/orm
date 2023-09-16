@@ -13,6 +13,12 @@ export class Connection {
     return results;
   }
 
+  async query(query: string, values?: string[]) {
+    const [results] = await this.mySqlConnection.query(query, values);
+
+    return results;
+  }
+
   disconnect(): Promise<void> {
     return this.mySqlConnection.end();
   }
