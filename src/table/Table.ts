@@ -6,11 +6,17 @@ function isRowDataPacketList(result: RowDataPacket[][] | RowDataPacket[] | OkPac
   return true;
 }
 
+function isResultSet(result: RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader): result is ResultSetHeader {
+  return Object.prototype.hasOwnProperty.call(result, 'insertId');
+}
+
 export class Table {
   #name: string;
+  id: string | number;
 
-  constructor() {
+  constructor(id: string | number) {
     this.#name = this.constructor.name;
+    this.id = id;
   }
 
   static async findAll() {
@@ -46,8 +52,22 @@ export class Table {
       values (${Array(entries.length).fill('?').join(', ')})`,
       entries.map(entry => entry[1])
     );
-    console.log(result);
 
-    return this;
+    if (!isResultSet(result)) {
+      return this;
+    }
+
+    return {
+      ...this,
+      id: result.insertId
+    };
+  }
+
+  async delete() {
+    if (!this.id) {
+      throw new Error('cannot delete object with no primary key');
+    }
+
+    await connection.query(`delete from ${this.#name} where id = ${this.id}`);
   }
 }

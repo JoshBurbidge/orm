@@ -7,6 +7,7 @@ export { Table } from './table/Table';
 
 // API:
 // client creates a JS class representing the data, extends library class
+// designate primary key column, etc
 // create database schema based on class (future TODO)
 
 // automatically connect on each query?
