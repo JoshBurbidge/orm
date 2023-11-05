@@ -5,8 +5,6 @@ function validateConnection(connection: mysql.Connection | undefined): connectio
   return Boolean(connection);
 }
 
-// constructor throws error if no connection?
-
 export class Connection {
   mySqlConnection: mysql.Connection | undefined;
 
@@ -18,17 +16,11 @@ export class Connection {
       password: process.env.DB_PASSWORD
     });
 
-    this.mySqlConnection =  mysqlConnection;
+    this.mySqlConnection = mysqlConnection;
   }
 
   async raw(query: string) {
-    if (!validateConnection(this.mySqlConnection)) {
-      throw new ConnectionError();
-    }
-
-    const [results] = await this.mySqlConnection.query(query);
-
-    return results;
+    return await this.query(query);
   }
 
   async query(query: string, values?: string[]) {
